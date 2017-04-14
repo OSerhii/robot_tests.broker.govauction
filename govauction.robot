@@ -853,7 +853,7 @@ Login
   govauction.Пошук тендера по ідентифікатору   ${username}  ${tender_uaid}
   ${status}=  Run Keyword And Return Status  Page Should Not Contain  Замовником внесено зміни в умови оголощення.
   Run Keyword If  ${status}  ConvToStr And Input Text  xpath=//input[contains(@name,'[value][amount]')]  ${fieldvalue}
-  ...  ELSE  Дочекатися І Клікнути  name=bid_confirm
+  ...  ELSE  Дочекатися І Клікнути  id=submit_bid
   Дочекатися І Клікнути  xpath=//button[@id="submit_bid"]
   Wait Until Keyword Succeeds  10 x  1 s  Element Should Be Visible  xpath=//div[contains(@class, 'alert-success')]
 
