@@ -169,7 +169,7 @@ Login
   Дочекатися І Клікнути  id=btn-ok
   Wait Until Keyword Succeeds  10 x  1 s  Element Should Not Be Visible  xpath=//div[@class="modal-backdrop fade"]
   Run Keyword If  ${dk_status}  Вибрати додатковий класифікатор  ${item}  ${index}
-  ...  ELSE  Wait And Select From List By Value  name=Tender[items][${index}][additionalClassifications][0][dkType]  000
+  #...  ELSE  Wait And Select From List By Value  name=Tender[items][${index}][additionalClassifications][0][dkType]  000
   Wait Until Element Is Visible  name=Tender[items][${index}][deliveryAddress][countryName]
   Wait And Select From List By Label  name=Tender[items][${index}][deliveryAddress][countryName]  ${item.deliveryAddress.countryName}
   Wait And Select From List By Label  name=Tender[items][${index}][deliveryAddress][region]  ${item.deliveryAddress.region}
@@ -372,6 +372,9 @@ Login
   Дочекатися І Клікнути  xpath=(//input[contains(@id,"qualified")])[1]/..
   Capture Page Screenshot
   Дочекатися І Клікнути  name=send_prequalification
+  Wait Until Keyword Succeeds  10 x  1 s  Run Keywords
+  ...  Click Element  xpath=(//*[@data-dismiss="modal"])[last()]
+  ...  AND  Wait Until Page Does Not Contain  Зверніть увагу  10
   Накласти ЄЦП
   Capture Page Screenshot
 
@@ -517,7 +520,7 @@ Login
   Wait Until Keyword Succeeds  10 x  60 s  Run Keywords
   ...  Reload Page
   ...  AND  Page Should Contain  ${complaintID}
-  Run Keyword If  "переможця" in "${TEST_NAME}"  Input Text  xpath=//*[contains(text(),"${complaintID}")]/../descendant::textarea[contains(@name,"tendererAction")]  ${answer_data.data.resolution}
+  Run Keyword If  "переможця" in "${TEST_NAME}"  Input Text  xpath=//*[contains(text(),"${complaintID}")]/../descendant::textarea[contains(@name,"resolution")]  ${answer_data.data.resolution}
   ...  ELSE  Input Text  xpath=//*[contains(text(),"${complaintID}")]/../descendant::textarea[contains(@name,"[resolution]")]  ${answer_data.data.resolution}
   Дочекатися І Клікнути  xpath=//*[contains(text(),"${complaintID}")]/../descendant::input[@value="${answer_data.data.resolutionType}"]/..
   Дочекатися І Клікнути  name=answer_complaint_submit
@@ -824,8 +827,15 @@ Login
   Run Keyword If  ${meat} > 0  Вибрати нецінові показники в пропозиції  ${bid}
   Run Keyword If  ${selfeligible_status}  Дочекатися І Клікнути  xpath=//input[@id="bid-selfeligible"]/..
   Run Keyword If  ${selfqualified_status}  Дочекатися І Клікнути  xpath=//input[@id="bid-selfqualified"]/..
-  Дочекатися І Клікнути  xpath=//button[@id="submit_bid"]
+  Подати Пропозицію Без Накладення ЕЦП
   Wait Until Element Is Visible  xpath=//div[contains(@class, 'alert-success')]
+
+Подати Пропозицію Без Накладення ЕЦП
+  Wait Until Element Is Not Visible  xpath=//*[@class="spinner"]
+  Дочекатися І Клікнути  xpath=//button[@id="submit_bid"]
+  Run Keyword And Ignore Error  Wait Until Keyword Succeeds  10 x  1 s  Run Keywords
+  ...  Click Element  xpath=(//*[@data-dismiss="modal"])[last()]
+  ...  AND  Wait Until Page Does Not Contain  Зверніть увагу  10
 
 Ввести пропозицію для лотової зкупівлі
   [Arguments]  ${bid}
@@ -853,8 +863,8 @@ Login
   govauction.Пошук тендера по ідентифікатору   ${username}  ${tender_uaid}
   ${status}=  Run Keyword And Return Status  Page Should Not Contain  Замовником внесено зміни в умови оголощення.
   Run Keyword If  ${status}  ConvToStr And Input Text  xpath=//input[contains(@name,'[value][amount]')]  ${fieldvalue}
-  ...  ELSE  Дочекатися І Клікнути  id=submit_bid
-  Дочекатися І Клікнути  xpath=//button[@id="submit_bid"]
+  ...  ELSE  Подати Пропозицію Без Накладення ЕЦП
+  Подати Пропозицію Без Накладення ЕЦП
   Wait Until Keyword Succeeds  10 x  1 s  Element Should Be Visible  xpath=//div[contains(@class, 'alert-success')]
 
 Завантажити документ в ставку
@@ -866,7 +876,7 @@ Login
   Run Keyword If  ${doc_type_status}  Wait And Select From List By Value  xpath=(//select[contains(@name,"[documentType]")])[last()]  technicalSpecifications
   ${related_status}=  Run Keyword And Return Status  Element Should Be Visible  xpath=(//select[contains(@name,"[relatedItem]")])[last()]
   Run Keyword If  ${related_status}  Wait And Select From List By Value  xpath=(//select[contains(@name,"[relatedItem]")])[last()]  tender
-  Дочекатися І Клікнути  xpath=//button[@id="submit_bid"]
+  Подати Пропозицію Без Накладення ЕЦП
   Wait Until Element Is Visible  xpath=//div[contains(@class, 'alert-success')]
   Дочекатися завантаження документу
 
@@ -875,7 +885,7 @@ Login
   Wait Until Keyword Succeeds   30 x   10 s   Дочекатися вивантаження файлу до ЦБД
   Execute Javascript  window.confirm = function(msg) { return true; };
   Choose File  xpath=//div[contains(text(), 'Замiнити')]/form/input  ${path}
-  Дочекатися І Клікнути  xpath=//button[@id="submit_bid"]
+  Подати Пропозицію Без Накладення ЕЦП
   Wait Until Element Is Visible  xpath=//div[contains(@class, 'alert-success')]
   Дочекатися завантаження документу
 
@@ -884,7 +894,7 @@ Login
   govauction.Пошук тендера по ідентифікатору   ${username}  ${tender_uaid}
   Дочекатися І Клікнути  xpath=(//*[@class="confidentiality"])[last()]/..
   Input Text  xpath=(//textarea[contains(@name,"confidentialityRationale")])[last()]  ${doc_data.data.confidentialityRationale}
-  Дочекатися І Клікнути  xpath=//button[@id="submit_bid"]
+  Подати Пропозицію Без Накладення ЕЦП
   Wait Until Element Is Visible  xpath=//div[contains(@class, 'alert-success')]
 
 ###############################################################################################################
@@ -925,6 +935,9 @@ Login
   Choose File  xpath=//*[contains(text(),"${bid_phone}")]/ancestor::tr/following-sibling::tr[1]/descendant::input[@name="FileUpload[file]"]  ${document}
   Capture Page Screenshot
   Дочекатися І Клікнути  xpath=(//*[contains(text(),"${bid_phone}")]/ancestor::tr/following-sibling::tr[1]/descendant::button[@name="send_prequalification"])[1]
+  Wait Until Keyword Succeeds  10 x  1 s  Run Keywords
+  ...  Click Element  xpath=(//*[@data-dismiss="modal"])[last()]
+  ...  AND  Wait Until Page Does Not Contain  Зверніть увагу  10
   Накласти ЄЦП
   Capture Page Screenshot
 
@@ -940,6 +953,9 @@ Login
   Choose File  xpath=//*[contains(text(),"${bid_phone}")]/ancestor::tr/following-sibling::tr[1]/descendant::input[@name="FileUpload[file]"]  ${document}
   Capture Page Screenshot
   Дочекатися І Клікнути  xpath=(//*[contains(text(),"${bid_phone}")]/ancestor::tr/following-sibling::tr[1]/descendant::button[@name="send_prequalification"])[last()]
+  Wait Until Keyword Succeeds  10 x  1 s  Run Keywords
+  ...  Click Element  xpath=(//*[@data-dismiss="modal"])[last()]
+  ...  AND  Wait Until Page Does Not Contain  Зверніть увагу  10
   Накласти ЄЦП
   Capture Page Screenshot
 
@@ -1055,7 +1071,7 @@ Wait And Select From List By Label
   Wait Until Page Contains  Накласти ЕЦП
   Дочекатися І Клікнути  xpath=//*[contains(text(),"Накласти ЕЦП")]
   Capture Page Screenshot
-  Wait Until Element Is Visible  id=CAsServersSelect  60
+  Wait Until Keyword Succeeds  10 x  10 s  Element Should Be Visible  id=CAsServersSelect
   Capture Page Screenshot
   ${status}=  Run Keyword And Return Status  Page Should Contain  Оберіть файл з особистим ключем (зазвичай з ім'ям Key-6.dat) та вкажіть пароль захисту
   Run Keyword If  ${status}  Run Keywords
