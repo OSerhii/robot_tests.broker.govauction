@@ -71,14 +71,6 @@ def adapt_procuringEntity(role_name, tender_data):
     return tender_data
 
 
-def adapt_delivery_data(tender_data):
-    for index in range(len(tender_data['data']['items'])):
-        value = tender_data['data']['items'][index]['deliveryAddress']['region']
-        if value == u"місто Київ":
-            tender_data['data']['items'][index]['deliveryAddress']['region'] = u"Київ"
-    return tender_data
-
-
 def adapt_view_data(value, field_name):
     if 'value.amount' in field_name:
         value = float(value.split(' ')[0])

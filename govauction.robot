@@ -403,15 +403,6 @@ Login
   Дочекатися І Клікнути  xpath=//button[contains(@class,'btn_submit_form')]
   Wait Until Page Contains Element  xpath=//div[contains(@class, "alert-success")]
 
-#Видалити лот
-#  [Arguments]  ${username}  ${tender_uaid}  ${lot_id}
-#  govauction.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
-#  Дочекатися І Клікнути  xpath=//a[contains(@href,"tender/cancel")]
-#  ${elem_value}=  Get Element Attribute  xpath=//option[contains(text(),"${lot_id}")]@value
-#  Wait And Select From List By Value  name=Tender[cancellations][relatedLot]  ${elem_value}
-#  Input Text  name=Tender[cancellations][reason]  test
-#  Дочекатися І Клікнути  xpath=//button[@type="submit"]
-#  Wait Until Page Contains  Лот закупiвлi скасованно
 
 Видалити неціновий показник
   [Arguments]  ${username}  ${tender_uaid}  ${feature_id}
@@ -640,7 +631,7 @@ Login
   ${red}=  Evaluate  "\\033[1;31m"
   capture page screenshot
   ${status_item_block}=  Run Keyword And Return Status  Element Should Not Be Visible  xpath=//*[@tid="items.description"]
-  Run Keyword If  '${field_name}' == 'status'  Дочекатися І Клікнути   xpath=//a[text()='Інформація про закупівлю']
+  Run Keyword If  '${field_name}' == 'status' and ${status_item_block}   Дочекатися І Клікнути   xpath=//a[text()='Інформація про закупівлю']
   Run Keyword If  '${field_name}' == 'qualificationPeriod.endDate'  Wait Until Keyword Succeeds  10 x  60 s  Run Keywords
   ...  govauction.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
   ...  AND  Page Should Contain Element  xpath=//*[@tid="qualificationPeriod.endDate"]
